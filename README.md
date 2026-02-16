@@ -2,9 +2,6 @@
 
 A **Java-based Rubik's Cube solver** featuring 3 cube representations and 4 graph-search algorithms — from brute-force DFS to optimal IDA\* with a pre-computed Corner Pattern Database heuristic.
 
-![Java](https://img.shields.io/badge/Java-17%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Algorithms](https://img.shields.io/badge/Algorithms-DFS%20%7C%20BFS%20%7C%20IDDFS%20%7C%20IDA*-blue?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Working-brightgreen?style=for-the-badge)
 
 ---
 
@@ -50,12 +47,7 @@ rubiks-cube-solver/
 
 ---
 
-## Getting Started
 
-### Prerequisites
-
-- Java 17 or higher
-- `javac` and `java` available in PATH
 
 ### Compile & Run
 
@@ -154,18 +146,6 @@ IDA*:  ~tens of thousands       (heuristic pruning!)
 
 ---
 
-
-
----
-
-##  Future Improvements
-
-- [ ] Edge pattern database for stronger heuristics
-- [ ] Multi-heuristic IDA\* using `max(h_corners, h_edges)`
-- [ ] Move pruning to avoid redundant sequences (e.g., U followed by U')
-- [ ] Symmetry reduction to exploit the cube's 48-fold symmetry group
-- [ ] Interactive GUI / web visualization
-- [ ] Webcam-based cube scanner
 
 ---
 
