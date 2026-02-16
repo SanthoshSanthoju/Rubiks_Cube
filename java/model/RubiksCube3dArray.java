@@ -1,0 +1,295 @@
+package model;
+
+/**
+ * Rubik's Cube representation using a 3D char array: char[6][3][3].
+ * Each face is a 3x3 grid of color characters.
+ */
+public class RubiksCube3dArray extends RubiksCube {
+
+    private char[][][] cube = new char[6][3][3];
+
+    public RubiksCube3dArray() {
+        for (int i = 0; i < 6; i++)
+            for (int j = 0; j < 3; j++)
+                for (int k = 0; k < 3; k++)
+                    cube[i][j][k] = getColorLetter(COLOR.values()[i]);
+    }
+
+    private RubiksCube3dArray(char[][][] src) {
+        for (int i = 0; i < 6; i++)
+            for (int j = 0; j < 3; j++)
+                System.arraycopy(src[i][j], 0, cube[i][j], 0, 3);
+    }
+
+    @Override
+    public RubiksCube copy() {
+        return new RubiksCube3dArray(this.cube);
+    }
+
+    private void rotateFace(int ind) {
+        char[][] temp = new char[3][3];
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                temp[i][j] = cube[ind][i][j];
+
+        for (int i = 0; i < 3; i++)
+            cube[ind][0][i] = temp[2 - i][0];
+        for (int i = 0; i < 3; i++)
+            cube[ind][i][2] = temp[0][i];
+        for (int i = 0; i < 3; i++)
+            cube[ind][2][2 - i] = temp[i][2];
+        for (int i = 0; i < 3; i++)
+            cube[ind][2 - i][0] = temp[2][2 - i];
+    }
+
+    @Override
+    public COLOR getColor(FACE face, int row, int col) {
+        char c = cube[face.ordinal()][row][col];
+        switch (c) {
+            case 'B':
+                return COLOR.BLUE;
+            case 'R':
+                return COLOR.RED;
+            case 'G':
+                return COLOR.GREEN;
+            case 'O':
+                return COLOR.ORANGE;
+            case 'Y':
+                return COLOR.YELLOW;
+            default:
+                return COLOR.WHITE;
+        }
+    }
+
+    @Override
+    public void setColor(FACE face, int row, int col, COLOR color) {
+        cube[face.ordinal()][row][col] = getColorLetter(color);
+    }
+
+    @Override
+    public boolean isSolved() {
+        for (int i = 0; i < 6; i++)
+            for (int j = 0; j < 3; j++)
+                for (int k = 0; k < 3; k++)
+                    if (cube[i][j][k] != getColorLetter(COLOR.values()[i]))
+                        return false;
+        return true;
+    }
+
+    @Override
+    public RubiksCube u() {
+        rotateFace(0);
+        char[] temp = new char[3];
+        for (int i = 0; i < 3; i++)
+            temp[i] = cube[4][0][2 - i];
+        for (int i = 0; i < 3; i++)
+            cube[4][0][2 - i] = cube[1][0][2 - i];
+        for (int i = 0; i < 3; i++)
+            cube[1][0][2 - i] = cube[2][0][2 - i];
+        for (int i = 0; i < 3; i++)
+            cube[2][0][2 - i] = cube[3][0][2 - i];
+        for (int i = 0; i < 3; i++)
+            cube[3][0][2 - i] = temp[i];
+        return this;
+    }
+
+    @Override
+    public RubiksCube uPrime() {
+        u();
+        u();
+        u();
+        return this;
+    }
+
+    @Override
+    public RubiksCube u2() {
+        u();
+        u();
+        return this;
+    }
+
+    @Override
+    public RubiksCube l() {
+        rotateFace(1);
+        char[] temp = new char[3];
+        for (int i = 0; i < 3; i++)
+            temp[i] = cube[0][i][0];
+        for (int i = 0; i < 3; i++)
+            cube[0][i][0] = cube[4][2 - i][2];
+        for (int i = 0; i < 3; i++)
+            cube[4][2 - i][2] = cube[5][i][0];
+        for (int i = 0; i < 3; i++)
+            cube[5][i][0] = cube[2][i][0];
+        for (int i = 0; i < 3; i++)
+            cube[2][i][0] = temp[i];
+        return this;
+    }
+
+    @Override
+    public RubiksCube lPrime() {
+        l();
+        l();
+        l();
+        return this;
+    }
+
+    @Override
+    public RubiksCube l2() {
+        l();
+        l();
+        return this;
+    }
+
+    @Override
+    public RubiksCube f() {
+        rotateFace(2);
+        char[] temp = new char[3];
+        for (int i = 0; i < 3; i++)
+            temp[i] = cube[0][2][i];
+        for (int i = 0; i < 3; i++)
+            cube[0][2][i] = cube[1][2 - i][2];
+        for (int i = 0; i < 3; i++)
+            cube[1][2 - i][2] = cube[5][0][2 - i];
+        for (int i = 0; i < 3; i++)
+            cube[5][0][2 - i] = cube[3][i][0];
+        for (int i = 0; i < 3; i++)
+            cube[3][i][0] = temp[i];
+        return this;
+    }
+
+    @Override
+    public RubiksCube fPrime() {
+        f();
+        f();
+        f();
+        return this;
+    }
+
+    @Override
+    public RubiksCube f2() {
+        f();
+        f();
+        return this;
+    }
+
+    @Override
+    public RubiksCube r() {
+        rotateFace(3);
+        char[] temp = new char[3];
+        for (int i = 0; i < 3; i++)
+            temp[i] = cube[0][2 - i][2];
+        for (int i = 0; i < 3; i++)
+            cube[0][2 - i][2] = cube[2][2 - i][2];
+        for (int i = 0; i < 3; i++)
+            cube[2][2 - i][2] = cube[5][2 - i][2];
+        for (int i = 0; i < 3; i++)
+            cube[5][2 - i][2] = cube[4][i][0];
+        for (int i = 0; i < 3; i++)
+            cube[4][i][0] = temp[i];
+        return this;
+    }
+
+    @Override
+    public RubiksCube rPrime() {
+        r();
+        r();
+        r();
+        return this;
+    }
+
+    @Override
+    public RubiksCube r2() {
+        r();
+        r();
+        return this;
+    }
+
+    @Override
+    public RubiksCube b() {
+        rotateFace(4);
+        char[] temp = new char[3];
+        for (int i = 0; i < 3; i++)
+            temp[i] = cube[0][0][2 - i];
+        for (int i = 0; i < 3; i++)
+            cube[0][0][2 - i] = cube[3][2 - i][2];
+        for (int i = 0; i < 3; i++)
+            cube[3][2 - i][2] = cube[5][2][i];
+        for (int i = 0; i < 3; i++)
+            cube[5][2][i] = cube[1][i][0];
+        for (int i = 0; i < 3; i++)
+            cube[1][i][0] = temp[i];
+        return this;
+    }
+
+    @Override
+    public RubiksCube bPrime() {
+        b();
+        b();
+        b();
+        return this;
+    }
+
+    @Override
+    public RubiksCube b2() {
+        b();
+        b();
+        return this;
+    }
+
+    @Override
+    public RubiksCube d() {
+        rotateFace(5);
+        char[] temp = new char[3];
+        for (int i = 0; i < 3; i++)
+            temp[i] = cube[2][2][i];
+        for (int i = 0; i < 3; i++)
+            cube[2][2][i] = cube[1][2][i];
+        for (int i = 0; i < 3; i++)
+            cube[1][2][i] = cube[4][2][i];
+        for (int i = 0; i < 3; i++)
+            cube[4][2][i] = cube[3][2][i];
+        for (int i = 0; i < 3; i++)
+            cube[3][2][i] = temp[i];
+        return this;
+    }
+
+    @Override
+    public RubiksCube dPrime() {
+        d();
+        d();
+        d();
+        return this;
+    }
+
+    @Override
+    public RubiksCube d2() {
+        d();
+        d();
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof RubiksCube3dArray))
+            return false;
+        RubiksCube3dArray other = (RubiksCube3dArray) o;
+        for (int i = 0; i < 6; i++)
+            for (int j = 0; j < 3; j++)
+                for (int k = 0; k < 3; k++)
+                    if (cube[i][j][k] != other.cube[i][j][k])
+                        return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        StringBuilder sb = new StringBuilder(54);
+        for (int i = 0; i < 6; i++)
+            for (int j = 0; j < 3; j++)
+                for (int k = 0; k < 3; k++)
+                    sb.append(cube[i][j][k]);
+        return sb.toString().hashCode();
+    }
+}
